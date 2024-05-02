@@ -8,4 +8,5 @@
     <string name="fragment_login_remember_account">Recordar mi cuenta</string>
     <string name="fragment_login_create_account">Crear cuenta</string>
     <string name="fragment_login_forget_password">Olivdé mi contraseña</string>
+    <string name="fragment_login_title_login">Ingresar</string>
 </resources>
