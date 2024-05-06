@@ -11,6 +11,10 @@ import com.wistox07.movieapp.data.Api
 import com.wistox07.movieapp.data.LoginDto
 import com.wistox07.movieapp.data.LoginRequest
 import com.wistox07.movieapp.databinding.FragmentLoginBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Callback
 import retrofit2.Response
 
@@ -32,7 +36,7 @@ class LoginFragment : Fragment() {
         binding.btnSingIn.setOnClickListener {
             val email = binding.edtEmail.text.toString()
             val password = binding.edtPassword.text.toString()
-
+            /*
             val request = Api.build().singIn(LoginRequest(email, password))
             request.enqueue(object : Callback<LoginDto> {
                 override fun onResponse(call: retrofit2.Call<LoginDto>, response: Response<LoginDto>){
@@ -51,6 +55,29 @@ class LoginFragment : Fragment() {
                 }
 
             })
+            */
+            //COROUTINES
+            //GlobalScope espera aunque te muevas de fragment
+            GlobalScope.launch(Dispatchers.Main) {
+                try{
+                    binding.progressBar.visibility= View.VISIBLE
+                    val response = withContext(Dispatchers.IO){
+                        Api.build().singIn(LoginRequest(email,password))
+                    }
+
+                    if(response.isSuccessful) {
+                        val loginRemote = response.body()
+                        loginRemote?.let {
+                            println("Bienvenido: ${it.data.user.name} ${it.data.user.email}")
+                        }
+                    }
+                }catch (ex:java.lang.Exception){
+                    println(ex.message)
+                }finally {
+                    binding.progressBar.visibility = View.GONE
+                }
+            }
+
 
 
         }
