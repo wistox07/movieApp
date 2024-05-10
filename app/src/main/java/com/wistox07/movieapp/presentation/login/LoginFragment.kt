@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.wistox07.movieapp.R
 import com.wistox07.movieapp.data.Api
 import com.wistox07.movieapp.data.LoginDto
@@ -21,21 +22,41 @@ import retrofit2.Response
 class LoginFragment : Fragment() {
 
     private lateinit var binding : FragmentLoginBinding
+    val vIewModel : LoginVIewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false)
+
+    }
+
+
+    private fun setupObservers(){
+        vIewModel._loader.observe(viewLifecycleOwner){loader ->
+            if(loader) binding.progressBar.visibility = View.VISIBLE
+            else binding.progressBar.visibility = View.GONE
+        }
+        vIewModel._success.observe(viewLifecycleOwner){
+            println("Bienvenido: ${it.data.user.name} ${it.data.user.email}")
+        }
+        vIewModel._error.observe(viewLifecycleOwner){error ->
+            println(error)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentLoginBinding.bind(view)
+        setupObservers()
 
         binding.btnSingIn.setOnClickListener {
             val email = binding.edtEmail.text.toString()
             val password = binding.edtPassword.text.toString()
+
+            vIewModel.singIn(email,password)
             /*
             val request = Api.build().singIn(LoginRequest(email, password))
             request.enqueue(object : Callback<LoginDto> {
@@ -58,7 +79,7 @@ class LoginFragment : Fragment() {
             */
             //COROUTINES
             //GlobalScope espera aunque te muevas de fragment
-            GlobalScope.launch(Dispatchers.Main) {
+            /*GlobalScope.launch(Dispatchers.Main) {
                 try{
                     binding.progressBar.visibility= View.VISIBLE
                     val response = withContext(Dispatchers.IO){
@@ -77,6 +98,7 @@ class LoginFragment : Fragment() {
                     binding.progressBar.visibility = View.GONE
                 }
             }
+            */
 
 
 
