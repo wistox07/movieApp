@@ -1,6 +1,7 @@
 package com.wistox07.movieapp.presentation.login
 
 import android.view.View
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,6 +20,9 @@ class LoginVIewModel : ViewModel(){
     val _loader = MutableLiveData<Boolean>()
     val _success = MutableLiveData<LoginDto>()
     val _error = MutableLiveData<String>()
+
+    private val _state = MutableLiveData<LoginState>()
+    val state : LiveData<LoginState> = _state
     fun singIn(email:String , password:String){
 
         //COROUTINES
@@ -27,7 +31,7 @@ class LoginVIewModel : ViewModel(){
         viewModelScope.launch() {
             try{
 
-                _loader.value = true
+                _state.value = LoginState().copy(loader = true)
                 val response = withContext(Dispatchers.IO){
                     Api.build().singIn(LoginRequest(email,password))
                 }
@@ -35,13 +39,13 @@ class LoginVIewModel : ViewModel(){
                 if(response.isSuccessful) {
                     val loginRemote = response.body()
                     loginRemote?.let {user ->
-                        _success.value = user
+                        _state.value = LoginState().copy(user = user)
                     }
                 }
             }catch (ex:java.lang.Exception){
                 println(ex.message)
             }finally {
-                _loader.value = false
+                _state.value = LoginState().copy(loader = false)
             }
         }
     }

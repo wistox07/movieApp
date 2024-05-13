@@ -35,7 +35,7 @@ class LoginFragment : Fragment() {
 
 
     private fun setupObservers(){
-        vIewModel._loader.observe(viewLifecycleOwner){loader ->
+        /*vIewModel._loader.observe(viewLifecycleOwner){loader ->
             if(loader) binding.progressBar.visibility = View.VISIBLE
             else binding.progressBar.visibility = View.GONE
         }
@@ -45,6 +45,25 @@ class LoginFragment : Fragment() {
         vIewModel._error.observe(viewLifecycleOwner){error ->
             println(error)
         }
+        */
+        vIewModel.state.observe(viewLifecycleOwner){state ->
+            updateUI(state)
+        }
+
+    }
+
+    private fun updateUI(state: LoginState?){
+        state?.error?.let{error->
+            println(error)
+        }
+        state?.user?.let{
+            println("Bienvenido: ${it.data.user.name} ${it.data.user.email}")
+        }
+        state?.loader?.let{loader ->
+            if(loader) binding.progressBar.visibility = View.VISIBLE
+            else binding.progressBar.visibility = View.GONE
+        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
