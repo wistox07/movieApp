@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.wistox07.movieapp.data.Api
 import com.wistox07.movieapp.data.LoginDto
 import com.wistox07.movieapp.data.LoginRequest
+import com.wistox07.movieapp.domain.uses_case.SignInUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -23,16 +24,21 @@ class LoginVIewModel : ViewModel(){
 
     private val _state = MutableLiveData<LoginState>()
     val state : LiveData<LoginState> = _state
+
+    val signInUseCase = SignInUseCase()
     fun singIn(email:String , password:String){
 
         //COROUTINES
         //GlobalScope espera aunque te muevas de fragment
         //viewMOdelScope
+
         viewModelScope.launch() {
             try{
 
+
                 _state.value = LoginState().copy(loader = true)
-                val response = withContext(Dispatchers.IO){
+                signInUseCase(email,password)
+                /*val response = withContext(Dispatchers.IO){
                     Api.build().singIn(LoginRequest(email,password))
                 }
 
@@ -42,6 +48,7 @@ class LoginVIewModel : ViewModel(){
                         _state.value = LoginState().copy(user = user)
                     }
                 }
+                */
             }catch (ex:java.lang.Exception){
                 println(ex.message)
             }finally {
