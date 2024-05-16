@@ -7,14 +7,14 @@ data class LoginDto(
     val status:String,
     val token:String,
     val message:String,
-    val data:Data
+    val data:DataDto
 
 )
 
-data class Data(
+data class DataDto(
     val user:UserDto,
     @SerializedName("profile_id")
-    val profileId: Int
+    val profileId: Int?
 )
 
 data class UserDto(

@@ -7,3 +7,5 @@ data class LoginState(
     val error:String ?= null,
     val user:LoginDto ?= null
 )
+
+//loginState deberia trabajar con UserDto

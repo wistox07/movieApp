@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.wistox07.movieapp.data.Api
 import com.wistox07.movieapp.data.LoginDto
 import com.wistox07.movieapp.data.LoginRequest
+import com.wistox07.movieapp.data.Result
 import com.wistox07.movieapp.domain.uses_case.SignInUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -37,7 +38,18 @@ class LoginVIewModel : ViewModel(){
 
 
                 _state.value = LoginState().copy(loader = true)
-                signInUseCase(email,password)
+                val response = withContext(Dispatchers.IO){
+                    signInUseCase(email,password)
+                }
+                when(response){
+                    is Result.Error -> {
+                        _state.value = LoginState().copy(error = response.message)
+                    }
+                    is Result.Success -> {
+                        _state.value = LoginState().copy(user = response.data)
+
+                    }
+                }
                 /*val response = withContext(Dispatchers.IO){
                     Api.build().singIn(LoginRequest(email,password))
                 }

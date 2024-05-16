@@ -5,6 +5,6 @@ import com.wistox07.movieapp.domain.repository.LoginRepository
 
 class SignInUseCase {
     val repository : LoginRepository = LoginRepositoryImp()
-    operator fun invoke(email:String , password:String) = repository.singIn(email,password)
+     suspend operator fun invoke(email:String , password:String) = repository.singIn(email,password)
 
 }
