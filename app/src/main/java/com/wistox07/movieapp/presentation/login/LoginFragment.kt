@@ -56,8 +56,8 @@ class LoginFragment : Fragment() {
         state?.error?.let{error->
             println(error)
         }
-        state?.user?.let{
-            println("Bienvenido: ${it.data.user.name} ${it.data.user.email}")
+        state?.data?.let{user ->
+            println("Bienvenido: ${user.name} ${user.email}")
         }
         state?.loader?.let{loader ->
             if(loader) binding.progressBar.visibility = View.VISIBLE

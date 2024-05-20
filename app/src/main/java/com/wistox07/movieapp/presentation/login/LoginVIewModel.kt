@@ -46,7 +46,7 @@ class LoginVIewModel : ViewModel(){
                         _state.value = LoginState().copy(error = response.message)
                     }
                     is Result.Success -> {
-                        _state.value = LoginState().copy(user = response.data)
+                        _state.value = LoginState().copy(data = response.data)
 
                     }
                 }
